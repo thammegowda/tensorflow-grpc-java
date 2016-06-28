@@ -25,10 +25,10 @@ Requires Docker
 docker run -it -p 9000:9000 tgowda/inception_serving_tika
 
 # Inside the container, start tensorflow service
-root@8311ea4e8074:/# /serving/server.py
+root@8311ea4e8074:/# /serving/server.sh
 
 ```
 If you want to use a different port
 
-May modify the `server.sh`, which has
+May modify the `/serving/server.sh`, which has
 `/serving/bazel-bin/tensorflow_serving/example/inception_inference --port=9000 /serving/inception-export/  &> /serving/inception_log &`

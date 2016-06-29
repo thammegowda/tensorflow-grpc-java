@@ -14,6 +14,11 @@ This assumes that tensorflow inception is being served at `localhost:9000` and
  aslo the `example.jpg` file exists.
 
 
+To build this jar as an addon to tika, run
+
+```mvn clean compile assembly:single```
+
+and then use the jar `target/tensorflow-java-1.0-jar-with-dependencies.jar`
 
 ## Setup Tensorflow serving on localhost:9000
 

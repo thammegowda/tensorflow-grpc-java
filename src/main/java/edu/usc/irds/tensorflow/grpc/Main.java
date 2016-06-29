@@ -17,22 +17,17 @@
 
 package edu.usc.irds.tensorflow.grpc;
 
-import com.google.protobuf.ByteString;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import edu.usc.irds.tensorflow.grpc.InceptionInference.InceptionRequest;
-import edu.usc.irds.tensorflow.grpc.InceptionInference.InceptionResponse;
-
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Thamme Gowda
  */
 public class Main {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
 
     if (args.length != 2){
       System.out.println("Invalid args");
@@ -46,25 +41,15 @@ public class Main {
     int port = Integer.parseInt(parts[1]);
     String imagePath = args[1];
 
-    System.out.println("Connecting to GRPC service at " + args[0]);
-    ManagedChannel channel = ManagedChannelBuilder
-        .forAddress(server, port)
-        .usePlaintext(true)
-        .build();
-    InceptionBlockingStub stub = new InceptionBlockingStub(channel);
+    TensorflowObjectRecogniser recogniser = new TensorflowObjectRecogniser(server, port);
 
     System.out.println("Image = " + imagePath);
     InputStream jpegStream = new FileInputStream(imagePath);
-    ByteString jpegData = ByteString.readFrom(jpegStream);
-
-    InceptionRequest inceptReq = InceptionRequest
-        .newBuilder().setJpegEncoded(jpegData).build();
-
-    InceptionResponse resp = stub.classify(inceptReq);
-
-    System.out.println(resp);
-    System.out.println("Shutting down");
-    channel.shutdown();
+    List<Map.Entry<String, Double>> list = recogniser
+        .recognise(jpegStream);
+    System.out.println(list);
+    recogniser.close();
+    jpegStream.close();
   }
 
 }

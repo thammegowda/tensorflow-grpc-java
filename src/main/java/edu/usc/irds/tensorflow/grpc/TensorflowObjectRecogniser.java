@@ -63,7 +63,10 @@ public class TensorflowObjectRecogniser implements Closeable {
     InceptionRequest request = InceptionRequest.newBuilder()
         .setJpegEncoded(jpegData)
         .build();
+    long st = System.currentTimeMillis();
     InceptionResponse response = stub.classify(request);
+    long timeTaken = System.currentTimeMillis() - st;
+    LOG.debug("Time taken : {}ms", timeTaken);
     Iterator<String> classes = response.getClassesList().iterator();
     Iterator<Float> scores = response.getScoresList().iterator();
     while (classes.hasNext() && scores.hasNext()){
